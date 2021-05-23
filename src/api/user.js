@@ -1,5 +1,7 @@
 import request from '@/utils/request'
+import qs from 'qs'
 export function login(data) {
+  data = qs.stringify(data)
   return request({
     url: '/login',
     method: 'post',
@@ -9,7 +11,7 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: '/user/info',
     method: 'get',
     params: { token }
   })
