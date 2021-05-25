@@ -1,4 +1,5 @@
-import { login, logout, getInfo } from '@/api/user'
+import { getInfo } from '@/api/user'
+import { login, logout } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -28,7 +29,7 @@ const mutations = {
 }
 
 const actions = {
-  // user login
+  // building login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
@@ -44,11 +45,11 @@ const actions = {
     })
   },
 
-  // get user info
+  // get building info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        const { data } = response
+        const data = response.data
 
         if (!data) {
           return reject('Verification failed, please Login again.')
@@ -65,7 +66,7 @@ const actions = {
     })
   },
 
-  // user logout
+  // building logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {

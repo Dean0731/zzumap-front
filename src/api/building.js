@@ -1,48 +1,41 @@
 import request from '@/utils/request'
 // import qs from 'qs'
-export function getInfo(token) {
-  return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
 
 export function fetchList(query) {
   return request({
-    url: '/user',
+    url: '/building',
     method: 'get',
     params: query
   })
 }
 
-export function fetchUser(id) {
+export function fetchBuilding(id) {
   return request({
-    url: '/user/' + id,
+    url: '/building/' + id,
     method: 'get'
     // params: { id }
   })
 }
 
-export function deleteUser(id) {
+export function deleteBuilding(id) {
   return request({
-    url: '/user',
+    url: '/building',
     method: 'get',
     params: { id }
   })
 }
 
-export function createUser(data) {
+export function createBuilding(data) {
   return request({
-    url: '/user',
+    url: '/building',
     method: 'post',
     data
   })
 }
 
-export function updateUpdate(data) {
+export function updateBuilding(data) {
   return request({
-    url: '/user',
+    url: '/building',
     method: 'put',
     data
   })
