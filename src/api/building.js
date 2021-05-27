@@ -1,7 +1,14 @@
 import request from '@/utils/request'
-// import qs from 'qs'
-
-export function fetchList(query) {
+// function checkBlank(query) {
+//   for (var key in query) {
+//     if (query[key] === '') {
+//       query[key] = undefined
+//     }
+//   }
+//   return query
+// }
+export function fetchBuildingList(query) {
+  // query = checkBlank(query)
   return request({
     url: '/building',
     method: 'get',
@@ -17,11 +24,11 @@ export function fetchBuilding(id) {
   })
 }
 
-export function deleteBuilding(id) {
+export function deleteBuilding(idList) {
   return request({
     url: '/building',
-    method: 'get',
-    params: { id }
+    method: 'delete',
+    params: { idList }
   })
 }
 
