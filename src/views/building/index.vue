@@ -26,7 +26,7 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="60" :class-name="getSortClass('id')">
+      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="60">
         <template slot-scope="{$index}">
           <span>{{ $index+1+listQuery.size*(listQuery.current-1) }}</span>
         </template>
@@ -58,7 +58,7 @@
       </el-table-column>
       <el-table-column label="类别" align="center" width="100">
         <template slot-scope="{row}">
-          <span>{{ cls[row.type] }}</span>
+          <span>{{ cls[Number(row.type)]['display_name'] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="标签" align="center" width="150">
@@ -117,7 +117,9 @@
           <el-input v-model="temp.gid" />
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-input v-model="temp.type" />
+          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
+            <el-option v-for="item in cls" :key="item.key" :label="item.display_name" :value="item.key" />
+          </el-select>
         </el-form-item>
         <el-form-item label="联系方式" prop="tel">
           <el-input v-model="temp.tel" />
@@ -138,16 +140,6 @@
         </el-button>
       </div>
     </el-dialog>
-
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -162,6 +154,12 @@ const calendarTypeOptions = [
   { key: '南校区', display_name: '南' },
   { key: '北校区', display_name: '北' },
   { key: '医学院', display_name: '医' }
+]
+const cls = [
+  { key: '0', display_name: '教学楼' },
+  { key: '1', display_name: '实验室' },
+  { key: '2', display_name: '行政楼' },
+  { key: '3', display_name: '其他' }
 ]
 // arr to obj, such as { CN : "China", US : "USA" }
 const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
@@ -179,8 +177,9 @@ export default {
   },
   data() {
     return {
-      cls: { 0: '实验室', 1: '教学楼', 2: '行政楼', 3: '其他' },
+      cls: cls,
       tableKey: 0,
+      sourceList: [],
       list: null,
       total: 0,
       listLoading: true,
@@ -209,7 +208,6 @@ export default {
         update: 'Edit',
         create: 'Create'
       },
-      dialogPvVisible: false,
       pvData: [],
       rules: {
         belong: [{ required: true, message: 'belong is required', trigger: 'change' }],
@@ -245,7 +243,17 @@ export default {
         type: 'success'
       })
     },
-
+    handleGetImage(row) {
+      const query = { oid: row.bid }
+      fetchSourceList(query).then(response => {
+        const source = response.data.records
+        if (source.length === 0) {
+          this.$message.success('暂无资源！')
+        } else {
+          this.sourceList = source
+        }
+      })
+    },
     resetTemp() {
       this.temp = {
         name: undefined,
@@ -316,7 +324,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // deleteBuilding(row.bid)
+        deleteBuilding(row.bid)
         this.list.splice(index, 1)
         this.$notify({
           title: 'Success',
@@ -326,13 +334,6 @@ export default {
         })
       }).catch(() => {
         this.$message.info('操作已取消！')
-      })
-    },
-
-    handleGetImage(row) {
-      const query = { oid: row.bid }
-      fetchSourceList(query).then(response => {
-        alert(response.data.records)
       })
     },
     handleDownload() {
@@ -357,10 +358,6 @@ export default {
           return v[j]
         }
       }))
-    },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
     }
   }
 }
