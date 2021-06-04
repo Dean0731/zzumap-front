@@ -1,11 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.name" placeholder="名字" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.tag" placeholder="标签" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.belong" placeholder="校区" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
-      </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -31,56 +27,38 @@
           <span>{{ $index+1+listQuery.size*(listQuery.current-1) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="GID" align="center" width="80">
+      <el-table-column label="课程号" align="center" width="80">
         <template slot-scope="{row}">
-          <span>{{ row.gid }}</span>
+          <span>{{ row.cid }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="校区" align="center" width="80">
-        <template slot-scope="{row}">
-          <span>{{ row.belong }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="名字" align="center" width="180">
+      <el-table-column label="课程名" align="center" width="80">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="子名字" align="center" width="200">
+      <el-table-column label="上课周" align="center" width="150">
         <template slot-scope="{row}">
-          <span>{{ row.childName }}</span>
+          <span>{{ row.week }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="高度" align="center" width="80">
+      <el-table-column label="上课时间" align="center" width="180">
         <template slot-scope="{row}">
-          <span>{{ row.height }}</span>
+          <span>{{ row.startTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="类别" align="center" width="100">
+      <el-table-column label="上课时间" align="center" width="180">
         <template slot-scope="{row}">
-          <span>{{ cls[Number(row.type)]['display_name'] }}</span>
+          <span>{{ row.endTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标签" align="center" width="150">
+      <el-table-column label="介绍" align="center" width="300">
         <template slot-scope="{row}">
-          <span>{{ row.tag }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="电话" align="center" width="120">
-        <template slot-scope="{row}">
-          <span>{{ row.tel }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="详细地址" align="center" width="300">
-        <template slot-scope="{row}">
-          <span>{{ row.address }}</span>
+          <span>{{ row.introduction }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button size="mini" type="success" @click="handleGetIntroduce(row)">
-            介绍
-          </el-button>
           <el-button size="mini" type="success" @click="handleGetImage(row)">
             图片
           </el-button>
@@ -99,36 +77,15 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="校区" prop="belong">
-          <el-select v-model="temp.belong" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-          </el-select>
+
+        <el-form-item label="所属建筑" prop="bid">
+          <el-input v-model="temp.bid" />
         </el-form-item>
-        <el-form-item label="名字" prop="name">
-          <el-input v-model="temp.name" />
-        </el-form-item>
-        <el-form-item label="子名字" prop="childName">
-          <el-input v-model="temp.childName" />
-        </el-form-item>
-        <el-form-item label="高度" prop="height">
-          <el-input v-model="temp.height" type="number" />
-        </el-form-item>
-        <el-form-item label="GID" prop="gid">
-          <el-input v-model="temp.gid" />
-        </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in cls" :key="item.key" :label="item.display_name" :value="item.key" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="联系方式" prop="tel">
-          <el-input v-model="temp.tel" />
+        <el-form-item label="房间号" prop="courseNumber">
+          <el-input v-model="temp.courseNumber" />
         </el-form-item>
         <el-form-item label="标签" prop="tag">
           <el-input v-model="temp.tag" />
-        </el-form-item>
-        <el-form-item label="详细地址" prop="address">
-          <el-input v-model="temp.address" />
         </el-form-item>
         <el-form-item label="介绍" prop="introduction">
           <el-input v-model="temp.introduction" type="textarea" />
@@ -147,7 +104,7 @@
 </template>
 
 <script>
-import { fetchBuildingList, updateBuilding, createBuilding, deleteBuilding } from '@/api/building'
+import { fetchCourseList, updateCourse, createCourse, deleteCourse } from '@/api/course'
 import { fetchSourceList } from '@/api/source'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
@@ -227,7 +184,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchBuildingList(this.listQuery).then(response => {
+      fetchCourseList(this.listQuery).then(response => {
         this.list = response.data.records
         this.total = response.data.total
         // Just to simulate the time of the request
@@ -252,7 +209,7 @@ export default {
       })
     },
     handleGetImage(row) {
-      const query = { oid: row.bid }
+      const query = { oid: row.cid }
       fetchSourceList(query).then(response => {
         const source = response.data.records
         if (source.length === 0) {
@@ -286,7 +243,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createBuilding(this.temp).then(() => {
+          createCourse(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -313,7 +270,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateBuilding(tempData).then(() => {
+          updateCourse(tempData).then(() => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
@@ -333,7 +290,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteBuilding(row.bid)
+        deleteCourse(row.cid)
         this.list.splice(index, 1)
         this.$notify({
           title: 'Success',
@@ -348,8 +305,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['bid', 'name', 'childName', 'belong', 'height', 'gid', 'type', 'tag', 'tel', 'address', 'createTime']
-        const filterVal = ['bid', 'name', 'childName', 'belong', 'height', 'gid', 'type', 'tag', 'tel', 'address', 'createTime']
+        const tHeader = ['cid', 'name', 'childName', 'belong', 'height', 'gid', 'type', 'tag', 'tel', 'address', 'createTime']
+        const filterVal = ['cid', 'name', 'childName', 'belong', 'height', 'gid', 'type', 'tag', 'tel', 'address', 'createTime']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
