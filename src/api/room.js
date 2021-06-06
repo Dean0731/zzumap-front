@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function fetchRoomList(query) {
   return request({
-    url: '/room',
+    url: '/admin/room',
     method: 'get',
     params: query
   })
@@ -9,7 +9,7 @@ export function fetchRoomList(query) {
 
 export function fetchRoom(id) {
   return request({
-    url: '/room/' + id,
+    url: '/admin/room/' + id,
     method: 'get'
     // params: { id }
   })
@@ -17,7 +17,7 @@ export function fetchRoom(id) {
 
 export function deleteRoom(idList) {
   return request({
-    url: '/room',
+    url: '/admin/room',
     method: 'delete',
     params: { idList }
   })
@@ -25,7 +25,7 @@ export function deleteRoom(idList) {
 
 export function createRoom(data) {
   return request({
-    url: '/room',
+    url: '/admin/room',
     method: 'post',
     data
   })
@@ -33,7 +33,7 @@ export function createRoom(data) {
 
 export function updateRoom(data) {
   return request({
-    url: '/room',
+    url: '/admin/room',
     method: 'put',
     data
   })

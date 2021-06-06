@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function fetchTeacherList(query) {
   return request({
-    url: '/teacher',
+    url: '/admin/teacher',
     method: 'get',
     params: query
   })
@@ -9,7 +9,7 @@ export function fetchTeacherList(query) {
 
 export function fetchTeacher(id) {
   return request({
-    url: '/teacher/' + id,
+    url: '/admin/teacher/' + id,
     method: 'get'
     // params: { id }
   })
@@ -17,7 +17,7 @@ export function fetchTeacher(id) {
 
 export function deleteTeacher(idList) {
   return request({
-    url: '/teacher',
+    url: '/admin/teacher',
     method: 'delete',
     params: { idList }
   })
@@ -25,7 +25,7 @@ export function deleteTeacher(idList) {
 
 export function createTeacher(data) {
   return request({
-    url: '/teacher',
+    url: '/admin/teacher',
     method: 'post',
     data
   })
@@ -33,7 +33,7 @@ export function createTeacher(data) {
 
 export function updateTeacher(data) {
   return request({
-    url: '/teacher',
+    url: '/admin/teacher',
     method: 'put',
     data
   })

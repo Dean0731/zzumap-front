@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function fetchSourceList(query) {
   return request({
-    url: '/source',
+    url: '/admin/source',
     method: 'get',
     params: query
   })
@@ -9,7 +9,7 @@ export function fetchSourceList(query) {
 
 export function fetchSource(id) {
   return request({
-    url: '/source/' + id,
+    url: '/admin/source/' + id,
     method: 'get'
     // params: { id }
   })
@@ -17,7 +17,7 @@ export function fetchSource(id) {
 
 export function deleteSource(idList) {
   return request({
-    url: '/source',
+    url: '/admin/source',
     method: 'delete',
     params: { idList }
   })
@@ -25,7 +25,7 @@ export function deleteSource(idList) {
 
 export function createSource(data) {
   return request({
-    url: '/source',
+    url: '/admin/source',
     method: 'post',
     data
   })
@@ -33,7 +33,7 @@ export function createSource(data) {
 
 export function updateSource(data) {
   return request({
-    url: '/source',
+    url: '/admin/source',
     method: 'put',
     data
   })
