@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.name" placeholder="名字" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.tag" placeholder="标签" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.belong" placeholder="校区" clearable class="filter-item" style="width: 130px">
+      <el-input v-model="listQuery.name" placeholder="名字" style="width: 200px;margin-right:10px" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.tag" placeholder="标签" style="width: 200px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.belong" placeholder="校区" clearable class="filter-item" style="width: 200px;margin-right:10px">
         <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">

@@ -66,7 +66,7 @@ export const constantRoutes = [
         path: 'building',
         name: 'Building',
         component: () => import('@/views/building'),
-        meta: { title: '建筑物管理', icon: 'table' }
+        meta: { title: '建筑物管理', icon: 'el-icon-office-building' }
       }
     ]
   },
@@ -82,7 +82,7 @@ export const constantRoutes = [
         path: 'teacher',
         name: 'Teacher',
         component: () => import('@/views/teacher'),
-        meta: { title: '教师管理', icon: 'table' }
+        meta: { title: '教师管理', icon: 'el-icon-user-solid' }
       }
     ]
   },
@@ -98,7 +98,7 @@ export const constantRoutes = [
         path: 'source',
         name: 'Source',
         component: () => import('@/views/source'),
-        meta: { title: '资源管理', icon: 'table' }
+        meta: { title: '资源管理', icon: 'el-icon-picture' }
       }
     ]
   },
@@ -114,7 +114,7 @@ export const constantRoutes = [
         path: 'room',
         name: 'room',
         component: () => import('@/views/room'),
-        meta: { title: '房间管理', icon: 'table' }
+        meta: { title: '房间管理', icon: 'el-icon-house' }
       }
     ]
   },
@@ -129,7 +129,7 @@ export const constantRoutes = [
         path: 'course',
         name: 'course',
         component: () => import('@/views/course'),
-        meta: { title: '课程管理', icon: 'table' }
+        meta: { title: '课程管理', icon: 'el-icon-notebook-2' }
       }
     ]
   },

@@ -18,9 +18,7 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the building has logged in
   const hasToken = getToken()
-
   if (hasToken) {
-    console.log('permission: get local token')
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })

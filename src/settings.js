@@ -1,7 +1,5 @@
 module.exports = {
-
-  title: 'Vue Admin Template',
-
+  title: 'ZZUMAP Admin',
   /**
    * @type {boolean} true | false
    * @description Whether fix the header
