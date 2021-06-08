@@ -22,9 +22,14 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="60">
+      <el-table-column label="序号" prop="id" align="center" width="60">
         <template slot-scope="{$index}">
           <span>{{ $index+1+listQuery.size*(listQuery.current-1) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="ID" align="center" width="180">
+        <template slot-scope="{row}">
+          <span>{{ row.rid }}</span>
         </template>
       </el-table-column>
       <el-table-column label="房间号" align="center" width="80">

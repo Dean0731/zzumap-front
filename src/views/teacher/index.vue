@@ -22,9 +22,14 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="60">
+      <el-table-column label="序号" prop="id" align="center" width="60">
         <template slot-scope="{$index}">
           <span>{{ $index+1+listQuery.size*(listQuery.current-1) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="ID" align="center" width="180">
+        <template slot-scope="{row}">
+          <span>{{ row.tid }}</span>
         </template>
       </el-table-column>
       <el-table-column label="姓名" align="center" width="120">
@@ -224,6 +229,7 @@ export default {
               type: 'success',
               duration: 2000
             })
+            this.getList()
           })
         }
       })
@@ -249,8 +255,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['tid', 'name', 'childName', 'belong', 'height', 'gid', 'type', 'tag', 'tel', 'address', 'createTime']
-        const filterVal = ['tid', 'name', 'childName', 'belong', 'height', 'gid', 'type', 'tag', 'tel', 'address', 'createTime']
+        const tHeader = ['tid', 'name', 'email', 'tel', 'introduction']
+        const filterVal = ['tid', 'name', 'email', 'tel', 'introduction']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,

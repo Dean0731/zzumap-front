@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.name" placeholder="名字" style="width: 200px;margin-right:10px" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.title" placeholder="名字" style="width: 200px;margin-right:10px" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -22,9 +22,14 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="60">
+      <el-table-column label="序号" prop="id" align="center" width="60">
         <template slot-scope="{$index}">
           <span>{{ $index+1+listQuery.size*(listQuery.current-1) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="ID" align="center" width="180">
+        <template slot-scope="{row}">
+          <span>{{ row.sid }}</span>
         </template>
       </el-table-column>
       <el-table-column label="标题" align="center" width="180">
@@ -35,7 +40,7 @@
       <el-table-column label="url" align="center" width="500">
         <template slot-scope="{row}">
           <el-tooltip class="item" effect="dark" :content="row.url" placement="top-start">
-            <span>{{ row.url.substring(0,50) }}...</span>
+            <span>{{ row.url | ellipsis }}</span>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -71,8 +76,27 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+        <el-form-item label="类型" prop="type">
+          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
+            <el-option v-for="item in cls" :key="item.key" :label="item.display_name" :value="item.key" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="所属对象" prop="oid">
-          <el-input v-model="temp.oid" />
+          <el-select
+            v-model="temp.oid"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入关键词"
+            :remote-method="remoteMethod"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.rid || item.bid "
+              :label="item.childName || item.roomNumber"
+              :value="item.rid || item.bid"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="temp.title" />
@@ -81,14 +105,12 @@
           <el-input v-model="temp.url" />
         </el-form-item>
         <el-form-item label="时间" prop="takeTime">
-          <el-input v-model="temp.takeTime" />
+          <el-date-picker v-model="temp.takeTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" />
         </el-form-item>
         <el-form-item label="标签" prop="tag">
           <el-input v-model="temp.tag" />
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-input v-model="temp.type" />
-        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -106,15 +128,32 @@
 import { fetchSourceList, updateSource, createSource, deleteSource } from '@/api/source'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
 
+import { fetchBuildingList } from '@/api/building'
+import { fetchRoomList } from '@/api/room'
+const cls = [
+  { key: '房间', display_name: '房间' },
+  { key: '建筑物', display_name: '建筑物' },
+  { key: '其他', display_name: '其他' }
+]
 export default {
   name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
+  filters: {
+    ellipsis(value) {
+      if (!value) return ''
+      if (value.length > 50) {
+        return value.slice(0, 50) + '...'
+      }
+      return value
+    }
+  },
   data() {
     return {
       tableKey: 0,
+      cls: cls,
       sourceList: [],
       list: null,
       total: 0,
@@ -124,6 +163,8 @@ export default {
         size: 10,
         title: undefined
       },
+      options: [],
+      value: [],
       temp: {
         oid: undefined,
         title: undefined,
@@ -138,10 +179,7 @@ export default {
         update: 'Edit',
         create: 'Create'
       },
-      pvData: [],
-      rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }]
-      },
+      rules: {},
       downloadLoading: false
     }
   },
@@ -149,6 +187,19 @@ export default {
     this.getList()
   },
   methods: {
+    remoteMethod(search) {
+      if (this.temp.type === '建筑物') {
+        fetchBuildingList({ childName: search }).then(response => {
+          this.options = response.data.records
+        })
+      } else if (this.temp.type === '房间') {
+        fetchRoomList({ roomNumber: search }).then(response => {
+          this.options = response.data.records
+        })
+      } else {
+        this.$message.warning('请先选择类型')
+      }
+    },
     getList() {
       this.listLoading = true
       fetchSourceList(this.listQuery).then(response => {
@@ -178,14 +229,12 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        name: undefined,
-        childName: undefined,
-        belong: undefined,
-        height: undefined,
-        type: undefined,
+        oid: undefined,
+        title: undefined,
+        url: undefined,
         tag: undefined,
-        tel: undefined,
-        address: undefined
+        takeTime: undefined,
+        type: undefined
       }
     },
     handleCreate() {
@@ -261,8 +310,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['sid', 'name', 'childName', 'belong', 'height', 'gid', 'type', 'tag', 'tel', 'address', 'createTime']
-        const filterVal = ['sid', 'name', 'childName', 'belong', 'height', 'gid', 'type', 'tag', 'tel', 'address', 'createTime']
+        const tHeader = ['oid', 'title', 'url', 'takeTime', 'tag', 'type']
+        const filterVal = ['oid', 'title', 'url', 'takeTime', 'tag', 'type']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,

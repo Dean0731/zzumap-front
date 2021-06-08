@@ -26,9 +26,14 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="60">
+      <el-table-column label="序号" prop="id" align="center" width="60">
         <template slot-scope="{$index}">
           <span>{{ $index+1+listQuery.size*(listQuery.current-1) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="ID" align="center" width="180">
+        <template slot-scope="{row}">
+          <span>{{ row.bid }}</span>
         </template>
       </el-table-column>
       <el-table-column label="GID" align="center" width="80">
@@ -71,7 +76,7 @@
           <span>{{ row.tel }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="详细地址" align="center" width="300">
+      <el-table-column label="详细地址" align="center" width="100">
         <template slot-scope="{row}">
           <span>{{ row.address }}</span>
         </template>
@@ -324,6 +329,7 @@ export default {
               duration: 2000
             })
           })
+          this.getList()
         }
       })
     },

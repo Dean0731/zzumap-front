@@ -58,15 +58,21 @@ export const constantRoutes = [
   {
     path: '/building',
     component: Layout,
-    redirect: '/building/index',
+    redirect: '/building/select',
     name: 'building',
-    meta: { title: 'building', icon: 'el-icon-s-help' },
+    meta: { title: '建筑物管理', icon: 'el-icon-office-building' },
     children: [
       {
-        path: 'building',
-        name: 'Building',
+        path: 'select',
+        name: 'selectBuilding',
         component: () => import('@/views/building'),
-        meta: { title: '建筑物管理', icon: 'el-icon-office-building' }
+        meta: { title: '查询', icon: 'el-icon-search' }
+      },
+      {
+        path: 'add',
+        name: 'addBuilding',
+        component: () => import('@/views/building/createOrUpdate'),
+        meta: { title: '添加', icon: 'el-icon-document-add' }
       }
     ]
   },
