@@ -64,15 +64,15 @@ export const constantRoutes = [
     children: [
       {
         path: 'select',
-        name: 'selectBuilding',
-        component: () => import('@/views/building'),
+        name: 'select',
+        component: () => import('@/views/building/index'),
         meta: { title: '查询', icon: 'el-icon-search' }
       },
       {
-        path: 'add',
-        name: 'addBuilding',
+        path: 'edit',
+        name: 'edit',
         component: () => import('@/views/building/createOrUpdate'),
-        meta: { title: '添加', icon: 'el-icon-document-add' }
+        meta: { title: '编辑', icon: 'el-icon-edit' }
       }
     ]
   },
@@ -80,15 +80,21 @@ export const constantRoutes = [
   {
     path: '/teacher',
     component: Layout,
-    redirect: '/teacher/index',
+    redirect: '/teacher/select',
     name: 'teacher',
-    meta: { title: 'teacher', icon: 'el-icon-s-help' },
+    meta: { title: '教师管理', icon: 'el-icon-user-solid' },
     children: [
       {
-        path: 'teacher',
-        name: 'Teacher',
-        component: () => import('@/views/teacher'),
-        meta: { title: '教师管理', icon: 'el-icon-user-solid' }
+        path: 'select',
+        name: 'select',
+        component: () => import('@/views/teacher/index'),
+        meta: { title: '查询', icon: 'el-icon-search' }
+      },
+      {
+        path: 'edit',
+        name: 'edit',
+        component: () => import('@/views/teacher/createOrUpdate'),
+        meta: { title: '编辑', icon: 'el-icon-edit' }
       }
     ]
   },
@@ -139,6 +145,27 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/tool',
+    component: Layout,
+    redirect: '/course/export',
+    name: 'tool',
+    meta: { title: 'tool', icon: 'el-icon-s-tools' },
+    children: [
+      {
+        path: 'export',
+        name: 'export',
+        component: () => import('@/views/util/export'),
+        meta: { title: '数据导出', icon: 'el-icon-download' }
+      },
+      {
+        path: 'import',
+        name: 'import',
+        component: () => import('@/views/util/export'),
+        meta: { title: '数据导入', icon: 'el-icon-upload2' }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
@@ -158,3 +185,4 @@ export function resetRouter() {
 }
 
 export default router
+
