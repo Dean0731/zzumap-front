@@ -1,15 +1,12 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.tag" placeholder="标签" style="width: 200px;margin-right:10px" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.roomNumber" placeholder="房间号" style="width: 200px;margin-right:10px" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         Add
-      </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        Export
       </el-button>
     </div>
     <br>
@@ -32,7 +29,7 @@
           <span>{{ row.rid }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="房间号" align="center" width="80">
+      <el-table-column label="房间号" align="center" width="180">
         <template slot-scope="{row}">
           <span>{{ row.roomNumber }}</span>
         </template>
@@ -42,7 +39,12 @@
           <span>{{ row.tag }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="介绍" align="center" width="300">
+      <el-table-column label="所属建筑" align="center" width="180">
+        <template slot-scope="{row}">
+          <el-button type="text" @click="handlerBuilding(row)">{{ row.bid }}</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="介绍" align="center" width="500">
         <template slot-scope="{row}">
           <span>{{ row.introduction }}</span>
         </template>
@@ -66,10 +68,23 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-
+      <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
         <el-form-item label="所属建筑" prop="bid">
-          <el-input v-model="temp.bid" />
+          <el-select
+            v-model="temp.bid"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入关键词"
+            :remote-method="remoteMethod"
+          >
+            <el-option
+              v-for="item in buildings"
+              :key="item.bid"
+              :label="item.name+'('+item.bid+')'"
+              :value="item.bid"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="房间号" prop="roomNumber">
           <el-input v-model="temp.roomNumber" />
@@ -90,6 +105,21 @@
         </el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      title="房间信息"
+      :visible.sync="dialogVisibleBuilding"
+      width="30%"
+      center
+    >
+      <ul>
+        <li class="showInfo"><span>名字:{{ building.name }}</span></li>
+        <li class="showInfo"><span>名字2:{{ building.childName }}</span></li>
+        <li class="showInfo"><span>所属校区:{{ building.belong }}</span></li>
+        <li class="showInfo"><span>高度:{{ building.height }}</span></li>
+        <li class="showInfo"><span>电话:{{ building.tel }}</span></li>
+        <li class="showInfo"><span>介绍:{{ building.introduction }}</span></li>
+      </ul>
+    </el-dialog>
   </div>
 </template>
 
@@ -97,37 +127,14 @@
 import { fetchRoomList, updateRoom, createRoom, deleteRoom } from '@/api/room'
 import { fetchSourceList } from '@/api/source'
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-const calendarTypeOptions = [
-  { key: '东校区', display_name: '东' },
-  { key: '南校区', display_name: '南' },
-  { key: '北校区', display_name: '北' },
-  { key: '医学院', display_name: '医' }
-]
-const cls = [
-  { key: '0', display_name: '教学楼' },
-  { key: '1', display_name: '实验室' },
-  { key: '2', display_name: '行政楼' },
-  { key: '3', display_name: '其他' }
-]
-// arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
+import Pagination from '@/components/Pagination'
+import { fetchBuilding, fetchBuildingList } from '@/api/building'
 export default {
   name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
-  filters: {
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
-    }
-  },
   data() {
     return {
-      cls: cls,
       tableKey: 0,
       sourceList: [],
       list: null,
@@ -136,42 +143,41 @@ export default {
       listQuery: {
         current: 1,
         size: 10,
-        tag: undefined,
-        name: undefined,
-        belong: undefined
+        roomNumber: undefined
       },
-      calendarTypeOptions,
       temp: {
-        name: undefined,
-        childName: undefined,
-        belong: undefined,
-        height: undefined,
-        gid: undefined,
-        type: undefined,
-        tag: undefined,
-        tel: undefined,
-        address: undefined
+        bid: undefined,
+        roomNumber: undefined,
+        tah: undefined,
+        introduction: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
+      dialogVisibleBuilding: false,
       textMap: {
         update: 'Edit',
         create: 'Create'
       },
-      pvData: [],
-      rules: {
-        belong: [{ required: true, message: 'belong is required', trigger: 'change' }],
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        name: [{ required: true, message: 'name is required', trigger: 'change' }],
-        height: [{ required: true, message: 'height is required', trigger: 'blur' }]
-      },
-      downloadLoading: false
+      buildings: [],
+      building: {
+        name: undefined,
+        childName: undefined,
+        belong: undefined,
+        height: undefined,
+        tel: undefined,
+        introduction: undefined
+      }
     }
   },
   created() {
     this.getList()
   },
   methods: {
+    remoteMethod(query) {
+      fetchBuildingList({ childName: query }).then(response => {
+        this.buildings = response.data.records
+      })
+    },
     getList() {
       this.listLoading = true
       fetchRoomList(this.listQuery).then(response => {
@@ -186,17 +192,6 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
-    },
-    handleGetIntroduce(row) {
-      this.$alert(row.introduction, '详细介绍', {
-        confirmButtonText: '确定'
-        // callback: action => {
-        //   this.$message({
-        //     type: 'info',
-        //     message: `action: ${action}`
-        //   })
-        // }
-      })
     },
     handleGetImage(row) {
       const query = { oid: row.rid }
@@ -246,6 +241,14 @@ export default {
         }
       })
     },
+    handlerBuilding(row) {
+      this.dialogVisibleBuilding = true
+      fetchBuilding(row.bid).then(response => {
+        if (response.data != null) {
+          this.building = response.data
+        }
+      })
+    },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
       this.temp.timestamp = new Date(this.temp.timestamp)
@@ -291,30 +294,12 @@ export default {
       }).catch(() => {
         this.$message.info('操作已取消！')
       })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['rid', 'name', 'childName', 'belong', 'height', 'gid', 'type', 'tag', 'tel', 'address', 'createTime']
-        const filterVal = ['rid', 'name', 'childName', 'belong', 'height', 'gid', 'type', 'tag', 'tel', 'address', 'createTime']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
     }
   }
 }
 </script>
+<style>
+.showInfo{
+  margin-bottom: 18px;
+}
+</style>

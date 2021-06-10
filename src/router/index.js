@@ -98,19 +98,45 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/course',
+    component: Layout,
+    redirect: '/course/select',
+    name: 'course',
+    meta: { title: '课程管理', icon: 'el-icon-notebook-2' },
+    children: [
+      {
+        path: 'select',
+        name: 'select',
+        component: () => import('@/views/course/index'),
+        meta: { title: '查询', icon: 'el-icon-search' }
+      },
+      {
+        path: 'edit',
+        name: 'edit',
+        component: () => import('@/views/course/createOrUpdate'),
+        meta: { title: '编辑', icon: 'el-icon-edit' }
+      }
+    ]
+  },
   {
     path: '/source',
     component: Layout,
-    redirect: '/source/index',
+    redirect: '/source/select',
     name: 'source',
-    meta: { title: 'source', icon: 'el-icon-s-help' },
+    meta: { title: '资源管理', icon: 'el-icon-picture' },
     children: [
       {
-        path: 'source',
-        name: 'Source',
-        component: () => import('@/views/source'),
-        meta: { title: '资源管理', icon: 'el-icon-picture' }
+        path: 'select',
+        name: 'select',
+        component: () => import('@/views/source/index'),
+        meta: { title: '查询', icon: 'el-icon-search' }
+      },
+      {
+        path: 'edit',
+        name: 'edit',
+        component: () => import('@/views/source/createOrUpdate'),
+        meta: { title: '编辑', icon: 'el-icon-edit' }
       }
     ]
   },
@@ -131,21 +157,6 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/course',
-    component: Layout,
-    redirect: '/course/index',
-    name: 'course',
-    meta: { title: 'course', icon: 'el-icon-s-help' },
-    children: [
-      {
-        path: 'course',
-        name: 'course',
-        component: () => import('@/views/course'),
-        meta: { title: '课程管理', icon: 'el-icon-notebook-2' }
-      }
-    ]
-  },
-  {
     path: '/tool',
     component: Layout,
     redirect: '/course/export',
@@ -161,7 +172,7 @@ export const constantRoutes = [
       {
         path: 'import',
         name: 'import',
-        component: () => import('@/views/util/export'),
+        component: () => import('@/views/util/import'),
         meta: { title: '数据导入', icon: 'el-icon-upload2' }
       }
     ]

@@ -9,7 +9,7 @@ export function exportToExcel(list, filterVal) {
   })
 }
 
-function formatJson(list,filterVal) {
+function formatJson(list, filterVal) {
   return list.map(v => filterVal.map(j => {
     return v[j]
   }))

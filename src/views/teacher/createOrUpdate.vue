@@ -26,7 +26,7 @@
 
 <script>
 import { updateTeacher, createTeacher, fetchTeacher } from '@/api/teacher'
-import { loadingFullScreen } from '@/views/util/loading'
+import { loadingFullScreen } from '@/utils/loading'
 
 export default {
   name: 'CreateOrUpdateVue',
