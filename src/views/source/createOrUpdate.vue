@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div style="text-align: center;"><h2>{{ dialogStatus }}</h2></div>
-    <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+    <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
       <el-form-item label="类型" prop="type">
         <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
           <el-option v-for="item in cls" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -34,7 +34,7 @@
         <el-date-picker v-model="temp.takeTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" />
       </el-form-item>
       <el-form-item label="标签" prop="tag">
-        <el-input v-model="temp.tag" />
+        <el-input v-model="temp.tag" placeholder="请输入标，签逗号分割" />
       </el-form-item>
       <el-button @click="dialogFormVisible = false">
         Cancel
@@ -67,7 +67,7 @@ export default {
         oid: undefined,
         title: undefined,
         url: undefined,
-        tag: undefined,
+        tag: [],
         takeTime: undefined,
         type: undefined
       },

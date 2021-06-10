@@ -34,9 +34,17 @@
           <span>{{ row.roomNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标签" align="center" width="150">
+      <el-table-column label="标签" align="center" width="300">
         <template slot-scope="{row}">
-          <span>{{ row.tag }}</span>
+          <el-tag
+            v-for="item in row.tag"
+            :key="item.name"
+            :type="item.type"
+            effect="dark"
+            style="margin: 0px 2px 0px 0px"
+          >
+            {{ item.name }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="所属建筑" align="center" width="180">
@@ -129,6 +137,7 @@ import { fetchSourceList } from '@/api/source'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
 import { fetchBuilding, fetchBuildingList } from '@/api/building'
+import { changeTagList } from '@/utils/myutil'
 export default {
   name: 'ComplexTable',
   components: { Pagination },
@@ -181,7 +190,7 @@ export default {
     getList() {
       this.listLoading = true
       fetchRoomList(this.listQuery).then(response => {
-        this.list = response.data.records
+        this.list = changeTagList(response.data.records)
         this.total = response.data.total
         // Just to simulate the time of the request
         setTimeout(() => {

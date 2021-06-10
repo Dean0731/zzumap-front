@@ -41,12 +41,9 @@
       </el-table-column>
       <el-table-column label="名字" align="center" width="180">
         <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="子名字" align="center" width="200">
-        <template slot-scope="{row}">
-          <span>{{ row.childName }}</span>
+          <el-tooltip :content="row.childName" placement="right-start" effect="dark">
+            <span>{{ row.name }}</span>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column label="高度" align="center" width="80">
@@ -59,9 +56,17 @@
           <span>{{ cls[Number(row.type)]['display_name'] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标签" align="center" width="150">
+      <el-table-column label="标签" align="center" width="300">
         <template slot-scope="{row}">
-          <span>{{ row.tag }}</span>
+          <el-tag
+            v-for="item in row.tag"
+            :key="item.name"
+            :type="item.type"
+            effect="dark"
+            style="margin: 0px 2px 0px 0px"
+          >
+            {{ item.name }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="电话" align="center" width="120">
@@ -102,6 +107,7 @@ import { fetchBuildingList, deleteBuilding } from '@/api/building'
 import { fetchSourceList } from '@/api/source'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
+import { changeTagList } from '@/utils/myutil'
 const calendarTypeOptions = [
   { key: '东校区', display_name: '东校区' },
   { key: '南校区', display_name: '南校区' },
@@ -152,7 +158,7 @@ export default {
     getList() {
       this.listLoading = true
       fetchBuildingList(this.listQuery).then(response => {
-        this.list = response.data.records
+        this.list = changeTagList(response.data.records)
         this.total = response.data.total
         // Just to simulate the time of the request
         setTimeout(() => {
