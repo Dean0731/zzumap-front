@@ -124,7 +124,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/source/select',
     name: 'source',
-    meta: { title: '资源管理', icon: 'el-icon-picture' },
+    meta: { title: '资源管理', icon: 'file' },
     children: [
       {
         path: 'select',
@@ -146,13 +146,13 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/room/index',
     name: 'room',
-    meta: { title: 'room', icon: 'el-icon-s-help' },
+    meta: { title: 'room', icon: 'house' },
     children: [
       {
         path: 'room',
         name: 'room',
         component: () => import('@/views/room'),
-        meta: { title: '房间管理', icon: 'el-icon-house' }
+        meta: { title: '房间管理', icon: 'house' }
       }
     ]
   },
