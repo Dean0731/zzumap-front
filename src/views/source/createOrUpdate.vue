@@ -61,7 +61,6 @@ export default {
   data() {
     return {
       options: [],
-      value: [],
       cls,
       temp: {
         oid: undefined,

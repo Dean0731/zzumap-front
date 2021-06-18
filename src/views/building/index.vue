@@ -58,15 +58,17 @@
       </el-table-column>
       <el-table-column label="标签" align="center" width="300">
         <template slot-scope="{row}">
-          <el-tag
-            v-for="item in row.tag"
-            :key="item.name"
-            :type="item.type"
-            effect="dark"
-            style="margin: 0px 2px 0px 0px"
-          >
-            {{ item.name }}
-          </el-tag>
+          <div v-if="row.tag !== null">
+            <el-tag
+              v-for="(item,index) in row.tag.split(',')"
+              :key="index"
+              :type="tagType[Math.floor(Math.random()*5)]"
+              effect="dark"
+              style="margin-left: 2px"
+            >
+              {{ item }}
+            </el-tag>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="电话" align="center" width="120">
@@ -107,7 +109,7 @@ import { fetchBuildingList, deleteBuilding } from '@/api/building'
 import { fetchSourceList } from '@/api/source'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
-import { changeTagList } from '@/utils/myutil'
+import { tagType } from '@/utils/myutil'
 const calendarTypeOptions = [
   { key: '东校区', display_name: '东校区' },
   { key: '南校区', display_name: '南校区' },
@@ -136,6 +138,7 @@ export default {
   },
   data() {
     return {
+      tagType,
       cls: cls,
       sourceList: [],
       list: null,
@@ -158,7 +161,7 @@ export default {
     getList() {
       this.listLoading = true
       fetchBuildingList(this.listQuery).then(response => {
-        this.list = changeTagList(response.data.records)
+        this.list = response.data.records
         this.total = response.data.total
         // Just to simulate the time of the request
         setTimeout(() => {

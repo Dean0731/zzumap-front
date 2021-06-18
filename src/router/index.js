@@ -46,33 +46,33 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/首页',
     children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
+      path: '首页',
+      name: '首页',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
   },
 
   {
     path: '/building',
     component: Layout,
-    redirect: '/building/select',
-    name: 'building',
+    redirect: '/建筑物/建筑物查询',
+    name: '建筑物',
     meta: { title: '建筑物管理', icon: 'el-icon-office-building' },
     children: [
       {
-        path: 'select',
-        name: 'select',
+        path: 'show',
+        name: '建筑物查询',
         component: () => import('@/views/building/index'),
-        meta: { title: '查询', icon: 'el-icon-search' }
+        meta: { title: '建筑物查询', icon: 'el-icon-search' }
       },
       {
         path: 'edit',
-        name: 'edit',
+        name: '建筑物编辑',
         component: () => import('@/views/building/createOrUpdate'),
-        meta: { title: '编辑', icon: 'el-icon-edit' }
+        meta: { title: '建筑物编辑', icon: 'el-icon-edit' }
       }
     ]
   },
@@ -80,63 +80,63 @@ export const constantRoutes = [
   {
     path: '/teacher',
     component: Layout,
-    redirect: '/teacher/select',
-    name: 'teacher',
+    redirect: '/教师/教师查询',
+    name: '教师',
     meta: { title: '教师管理', icon: 'el-icon-user-solid' },
     children: [
       {
-        path: 'select',
-        name: 'select',
+        path: 'show',
+        name: '教师查询',
         component: () => import('@/views/teacher/index'),
-        meta: { title: '查询', icon: 'el-icon-search' }
+        meta: { title: '教师查询', icon: 'el-icon-search' }
       },
       {
         path: 'edit',
-        name: 'edit',
+        name: '教师编辑',
         component: () => import('@/views/teacher/createOrUpdate'),
-        meta: { title: '编辑', icon: 'el-icon-edit' }
+        meta: { title: '教师编辑', icon: 'el-icon-edit' }
       }
     ]
   },
   {
     path: '/course',
     component: Layout,
-    redirect: '/course/select',
-    name: 'course',
+    redirect: '/课程/课程查询',
+    name: '课程',
     meta: { title: '课程管理', icon: 'el-icon-notebook-2' },
     children: [
       {
-        path: 'select',
-        name: 'select',
+        path: 'show',
+        name: '课程查询',
         component: () => import('@/views/course/index'),
-        meta: { title: '查询', icon: 'el-icon-search' }
+        meta: { title: '课程查询', icon: 'el-icon-search' }
       },
       {
         path: 'edit',
-        name: 'edit',
+        name: '课程编辑',
         component: () => import('@/views/course/createOrUpdate'),
-        meta: { title: '编辑', icon: 'el-icon-edit' }
+        meta: { title: '课程编辑', icon: 'el-icon-edit' }
       }
     ]
   },
   {
     path: '/source',
     component: Layout,
-    redirect: '/source/select',
-    name: 'source',
+    redirect: '/资源/资源查询',
+    name: '资源',
     meta: { title: '资源管理', icon: 'file' },
     children: [
       {
-        path: 'select',
-        name: 'select',
+        path: 'show',
+        name: '资源查询',
         component: () => import('@/views/source/index'),
-        meta: { title: '查询', icon: 'el-icon-search' }
+        meta: { title: '资源查询', icon: 'el-icon-search' }
       },
       {
         path: 'edit',
-        name: 'edit',
+        name: '资源编辑',
         component: () => import('@/views/source/createOrUpdate'),
-        meta: { title: '编辑', icon: 'el-icon-edit' }
+        meta: { title: '资源编辑', icon: 'el-icon-edit' }
       }
     ]
   },
@@ -144,13 +144,13 @@ export const constantRoutes = [
   {
     path: '/room',
     component: Layout,
-    redirect: '/room/index',
-    name: 'room',
-    meta: { title: 'room', icon: 'house' },
+    redirect: '/房间/房间管理',
+    name: '房间',
+    meta: { title: '房间', icon: 'house' },
     children: [
       {
         path: 'room',
-        name: 'room',
+        name: '房间管理',
         component: () => import('@/views/room'),
         meta: { title: '房间管理', icon: 'house' }
       }
@@ -161,7 +161,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/course/export',
     name: 'tool',
-    meta: { title: 'tool', icon: 'el-icon-s-tools' },
+    meta: { title: '工具', icon: 'el-icon-s-tools' },
     children: [
       {
         path: 'export',

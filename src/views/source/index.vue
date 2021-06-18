@@ -40,15 +40,17 @@
       </el-table-column>
       <el-table-column label="标签" align="center" width="300">
         <template slot-scope="{row}">
-          <el-tag
-            v-for="item in row.tag"
-            :key="item.name"
-            :type="item.type"
-            effect="dark"
-            style="margin: 0px 2px 0px 0px"
-          >
-            {{ item.name }}
-          </el-tag>
+          <div v-if="row.tag !== null">
+            <el-tag
+              v-for="(item,index) in row.tag.split(',')"
+              :key="index"
+              :type="tagType[Math.floor(Math.random()*5)]"
+              effect="dark"
+              style="margin-left: 2px"
+            >
+              {{ item }}
+            </el-tag>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="类型" align="center" width="120">
@@ -81,7 +83,7 @@
 import { fetchSourceList, deleteSource } from '@/api/source'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination'
-import { changeTagList } from '@/utils/myutil'
+import { tagType } from '@/utils/myutil'
 export default {
   name: 'ComplexTable',
   components: { Pagination },
@@ -97,6 +99,7 @@ export default {
   },
   data() {
     return {
+      tagType,
       tableKey: 0,
       sourceList: [],
       list: null,
@@ -116,7 +119,7 @@ export default {
     getList() {
       this.listLoading = true
       fetchSourceList(this.listQuery).then(response => {
-        this.list = changeTagList(response.data.records)
+        this.list = response.data.records
         this.total = response.data.total
         // Just to simulate the time of the request
         setTimeout(() => {
