@@ -66,7 +66,7 @@ export default {
         oid: undefined,
         title: undefined,
         url: undefined,
-        tag: [],
+        tag: undefined,
         takeTime: undefined,
         type: undefined
       },
